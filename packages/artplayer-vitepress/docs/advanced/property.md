@@ -344,7 +344,7 @@ art.on('ready', () => {
 
 -   Type: `Function`
 
-下载当前视频帧的截图
+下载当前视频帧的截图, 可选参数为截图名字
 
 <div className="run-code">▶ Run Code</div>
 
@@ -355,7 +355,7 @@ var art = new Artplayer({
 });
 
 art.on('ready', () => {
-    art.screenshot();
+    art.screenshot('your-name');
 });
 ```
 
@@ -660,36 +660,6 @@ art.on('ready', () => {
 });
 ```
 
-## `loop`
-
--   Type: `Setter/Getter`
--   Parameter: `Array`
-
-设置和获取区间循序播放，单位秒
-
-<div className="run-code">▶ Run Code</div>
-
-```js{8}
-var art = new Artplayer({
-    container: '.artplayer-app',
-    url: '/assets/sample/video.mp4',
-});
-
-art.on('ready', () => {
-    console.info(art.loop);
-    art.loop = [5, 10];
-    console.info(art.loop);
-});
-```
-
-:::warning 提示
-
-删除区间循环播放，只需要设置 `loop` 为 `[]` 即可
-
-`art.loop` 与 `art.option.loop` 是两个不同的东西，请勿弄乱
-
-:::
-
 ## `autoHeight`
 
 -   Type: `Function`
@@ -970,4 +940,51 @@ art.on('ready', () => {
 		];
 	}, 3000);
 })
+```
+
+## `thumbnails`
+
+-   Type: `Setter/Getter`
+-   Parameter: `Object`
+
+动态设置缩略图
+
+<div className="run-code">▶ Run Code</div>
+
+```js
+var art = new Artplayer({
+	container: '.artplayer-app',
+	url: '/assets/sample/video.mp4',
+});
+
+art.on('ready', () => {
+    art.thumbnails = {
+        url: '/assets/sample/thumbnails.png',
+        number: 60,
+        column: 10,
+    };
+});
+```
+
+## `subtitleOffset`
+
+-   Type: `Setter/Getter`
+-   Parameter: `Number`
+
+动态设置字幕偏移
+
+<div className="run-code">▶ Run Code</div>
+
+```js
+var art = new Artplayer({
+	container: '.artplayer-app',
+	url: '/assets/sample/video.mp4',
+    subtitle: {
+        url: '/assets/sample/subtitle.srt',
+    },
+});
+
+art.on('ready', () => {
+    art.subtitleOffset = 1;
+});
 ```

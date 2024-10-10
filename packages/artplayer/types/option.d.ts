@@ -9,6 +9,38 @@ import Artplayer = require('./artplayer');
 
 export type CustomType = 'flv' | 'm3u8' | 'hls' | 'ts' | 'mpd' | 'torrent' | (string & Record<never, never>);
 
+export type Thumbnails = {
+    /**
+     * The thumbnail image url
+     */
+    url: string;
+
+    /**
+     * The thumbnail item number
+     */
+    number?: number;
+
+    /**
+     * The thumbnail column size
+     */
+    column?: number;
+
+    /**
+     * The thumbnail width
+     */
+    width?: number;
+
+    /**
+     * The thumbnail height
+     */
+    height?: number;
+
+    /**
+     * The thumbnail scale
+     */
+    scale?: number;
+};
+
 export type Option = {
     /**
      * The player id
@@ -181,6 +213,11 @@ export type Option = {
     airplay?: boolean;
 
     /**
+     * Custom video proxy
+     */
+    proxy?: (this: Artplayer, art: Artplayer) => HTMLCanvasElement | HTMLVideoElement;
+
+    /**
      * Custom plugin list
      */
     plugins?: ((this: Artplayer, art: Artplayer) => unknown)[];
@@ -228,32 +265,7 @@ export type Option = {
     /**
      * Custom thumbnail
      */
-    thumbnails?: {
-        /**
-         * The thumbnail image url
-         */
-        url: string;
-
-        /**
-         * The thumbnail item number
-         */
-        number?: number;
-
-        /**
-         * The thumbnail column size
-         */
-        column?: number;
-
-        /**
-         * The thumbnail width
-         */
-        width?: number;
-
-        /**
-         * The thumbnail height
-         */
-        height?: number;
-    };
+    thumbnails?: Thumbnails;
 
     /**
      * Custom subtitle option

@@ -1,22 +1,22 @@
-# Controls
+# Controller
 
-## Config
+## Configuration
 
-| Property   | Type                | Describe                                                                             |
-| ---------- | ------------------- | ------------------------------------------------------------------------------------ |
-| `disable`  | `Boolean`           | Whether to disable the component                                                     |
-| `name`     | `String`            | Component unique name, used to mark class name                                       |
-| `index`    | `Number`            | Component index, used for display priority                                           |
-| `html`     | `String`, `Element` | DOM element of the component                                                         |
-| `style`    | `Object`            | component style object                                                               |
-| `click`    | `Function`          | Component click event                                                                |
-| `mounted`  | `Function`          | Triggered after the component is mounted                                             |
-| `tooltip`  | `String`            | Tooltip text for the component                                                       |
-| `position` | `String`            | `left` and `right` control the left and right positions where the controller appears |
-| `selector` | `Array`             | Array of objects for the select list                                                 |
-| `onSelect` | `Function`          | A function that is triggered when an element of the select list is clicked           |
+| Property   | Type                | Description                               |
+| ---------- | ------------------- | ------------------------------------------ |
+| `disable`  | `Boolean`           | Whether to disable the component          |
+| `name`     | `String`            | The unique name of the component for class identification |
+| `index`    | `Number`            | The index of the component, used for display priority |
+| `html`     | `String`, `Element` | The component's DOM element               |
+| `style`    | `Object`            | The style object for the component        |
+| `click`    | `Function`          | Component click event                        |
+| `mounted`  | `Function`          | Triggered after the component is mounted    |
+| `tooltip`  | `String`            | Tooltip text for the component              |
+| `position` | `String`            | `left` and `right` control the position of the controller |
+| `selector` | `Array`             | An array of objects for the selection list  |
+| `onSelect` | `Function`          | Function triggered when an item from the selection list is clicked |
 
-## Init
+## Creation
 
 <div className="run-code">▶ Run Code</div>
 
@@ -64,10 +64,9 @@ var art = new Artplayer({
 
 // Get the Element of control by name
 console.info(art.controls['your-button']);
-console.info(art.controls.subtitle);
+console.info(art.controls['subtitle']);
 ```
-
-## Add
+## Adding
 
 <div className="run-code">▶ Run Code</div>
 
@@ -95,10 +94,9 @@ art.controls.add({
 });
 
 // Get the Element of control by name
-console.info(art.controls.button1);
+console.info(art.controls['button1']);
 ```
-
-## Remove
+## Delete
 
 <div className="run-code">▶ Run Code</div>
 
@@ -127,7 +125,6 @@ art.on('ready', () => {
     }, 3000);
 });
 ```
-
 ## Update
 
 <div className="run-code">▶ Run Code</div>

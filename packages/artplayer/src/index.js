@@ -156,6 +156,7 @@ export default class Artplayer extends Emitter {
             autoPlayback: false,
             autoOrientation: false,
             airplay: false,
+            proxy: undefined,
             layers: [],
             contextmenu: [],
             controls: [],
@@ -169,11 +170,13 @@ export default class Artplayer extends Emitter {
                 column: 10,
                 width: 0,
                 height: 0,
+                scale: 1,
             },
             subtitle: {
                 url: '',
                 type: '',
                 style: {},
+                name: '',
                 escape: true,
                 encoding: 'utf-8',
                 onVttLoad: (vtt) => vtt,
@@ -211,6 +214,7 @@ export default class Artplayer extends Emitter {
     }
 }
 
+Artplayer.STYLE = style;
 Artplayer.DEBUG = false;
 Artplayer.CONTEXTMENU = true;
 Artplayer.NOTICE_TIME = 2000;
@@ -244,26 +248,19 @@ Artplayer.FULLSCREEN_WEB_IN_BODY = false;
 Artplayer.LOG_VERSION = true;
 Artplayer.USE_RAF = false;
 
-if (typeof document !== 'undefined') {
-    if (!document.getElementById('artplayer-style')) {
-        const $style = utils.createElement('style');
-        $style.id = 'artplayer-style';
-        $style.textContent = style;
-        document.head.appendChild($style);
-    }
-}
-
-if (typeof window !== 'undefined') {
+if (utils.isBrowser) {
     window['Artplayer'] = Artplayer;
-}
 
-setTimeout(() => {
-    if (Artplayer.LOG_VERSION) {
-        console.log(
-            `%c ArtPlayer %c ${Artplayer.version} %c https://artplayer.org`,
-            'color: #fff; background: #5f5f5f',
-            'color: #fff; background: #4bc729',
-            '',
-        );
-    }
-});
+    utils.setStyleText('artplayer-style', style);
+
+    setTimeout(() => {
+        if (Artplayer.LOG_VERSION) {
+            console.log(
+                `%c ArtPlayer %c ${Artplayer.version} %c https://artplayer.org`,
+                'color: #fff; background: #5f5f5f',
+                'color: #fff; background: #4bc729',
+                '',
+            );
+        }
+    }, 100);
+}

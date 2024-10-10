@@ -254,8 +254,6 @@ export declare class Player {
     set fullscreenWebToggle(state: boolean);
     get loaded(): number;
     get loadedTime(): number;
-    get loop(): number[];
-    set loop(value: number[]);
     get mini(): boolean;
     set mini(state: boolean);
     get pip(): boolean;
@@ -639,8 +637,9 @@ type I18nKeys =
     | 'es'
     | 'fa'
     | 'fr'
-    | `id`
-    | `ru`
+    | 'id'
+    | 'ru'
+    | 'tr'
     | (string & Record<never, never>);
 
 type I18nValue = {
@@ -739,6 +738,7 @@ export type Events = {
     error: [error: Error, reconnectTime: number];
     flip: [flip: Flip];
     fullscreen: [state: boolean];
+    fullscreenError: [event: Event];
     fullscreenWeb: [state: boolean];
     mini: [state: boolean];
     pause: [];
@@ -748,7 +748,6 @@ export type Events = {
     seek: [currentTime: number];
     subtitleOffset: [offset: number];
     restart: [url: string];
-    loop: [start?: number, end?: number];
     muted: [state: boolean];
 };
 
@@ -764,7 +763,6 @@ export type CssVar = {
     '--art-progress-color': string;
     '--art-hover-color': string;
     '--art-loaded-color': string;
-    '--art-loop-color': string;
     '--art-state-size': string;
     '--art-state-opacity': number;
     '--art-bottom-height': string;
@@ -772,7 +770,6 @@ export type CssVar = {
     '--art-bottom-gap': string;
     '--art-highlight-width': string;
     '--art-highlight-color': string;
-    '--art-loop-width': string;
     '--art-control-height': string;
     '--art-control-opacity': number;
     '--art-control-icon-size': string;
@@ -1065,6 +1062,8 @@ declare class Artplayer extends Player {
     static ASPECT_RATIO: string[];
     static FLIP: string[];
     static FULLSCREEN_WEB_IN_BODY: boolean;
+    static LOG_VERSION: boolean;
+    static USE_RAF: boolean;
 
     readonly id: number;
     readonly option: Option;
@@ -1169,7 +1168,9 @@ declare class Artplayer extends Player {
     } & Component;
 
     readonly plugins: {
-        add(plugin: (this: Artplayer, art: Artplayer) => unknown): Artplayer['plugins'];
+        add(
+            plugin: (this: Artplayer, art: Artplayer) => any | Promise<any>,
+        ): Promise<Artplayer['plugins']> | Artplayer['plugins'];
         [pluginName: string]: any;
     };
 }

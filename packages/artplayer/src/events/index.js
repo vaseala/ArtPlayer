@@ -1,4 +1,3 @@
-import { ArtPlayerError } from '../utils/error';
 import clickInit from './clickInit';
 import hoverInit from './hoverInit';
 import moveInit from './moveInit';
@@ -7,13 +6,13 @@ import gestureInit from './gestureInit';
 import viewInit from './viewInit';
 import documentInit from './documentInit';
 import updateInit from './updateInit';
+import restoreInit from './restoreInit';
 
 export default class Events {
     constructor(art) {
         this.destroyEvents = [];
         this.proxy = this.proxy.bind(this);
         this.hover = this.hover.bind(this);
-        this.loadImg = this.loadImg.bind(this);
 
         clickInit(art, this);
         hoverInit(art, this);
@@ -23,6 +22,7 @@ export default class Events {
         viewInit(art, this);
         documentInit(art, this);
         updateInit(art, this);
+        restoreInit(art, this);
     }
 
     proxy(target, name, callback, option = {}) {
@@ -43,28 +43,6 @@ export default class Events {
         if (mouseleave) {
             this.proxy(target, 'mouseleave', mouseleave);
         }
-    }
-
-    loadImg(img) {
-        return new Promise((resolve, reject) => {
-            let image;
-
-            if (img instanceof HTMLImageElement) {
-                image = img;
-            } else if (typeof img === 'string') {
-                image = new Image();
-                image.src = img;
-            } else {
-                return reject(new ArtPlayerError('Unable to get Image'));
-            }
-
-            if (image.complete) {
-                return resolve(image);
-            }
-
-            this.proxy(image, 'load', () => resolve(image));
-            this.proxy(image, 'error', () => reject(new ArtPlayerError(`Failed to load Image: ${image.src}`)));
-        });
     }
 
     remove(destroyEvent) {

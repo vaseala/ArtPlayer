@@ -26,7 +26,7 @@ export function append(parent, child) {
     } else {
         parent.insertAdjacentHTML('beforeend', String(child));
     }
-    return parent.lastElementChild ?? parent.lastChild;
+    return parent.lastElementChild || parent.lastChild;
 }
 
 export function remove(child) {
@@ -68,8 +68,8 @@ export function tooltip(target, msg, pos = 'top') {
 
 export function isInViewport(el, offset = 0) {
     const rect = el.getBoundingClientRect();
-    const windowHeight = window.innerHeight ?? document.documentElement.clientHeight;
-    const windowWidth = window.innerWidth ?? document.documentElement.clientWidth;
+    const windowHeight = window.innerHeight || document.documentElement.clientHeight;
+    const windowWidth = window.innerWidth || document.documentElement.clientWidth;
     const vertInView = rect.top - offset <= windowHeight && rect.top + rect.height + offset >= 0;
     const horInView = rect.left - offset <= windowWidth + offset && rect.left + rect.width + offset >= 0;
     return vertInView && horInView;
@@ -94,4 +94,67 @@ export function getIcon(key = '', html = '') {
     addClass(icon, `art-icon-${key}`);
     append(icon, html);
     return icon;
+}
+
+export function setStyleText(id, style) {
+    const $style = document.getElementById(id);
+    if ($style) {
+        $style.textContent = style;
+    } else {
+        const $style = createElement('style');
+        $style.id = id;
+        $style.textContent = style;
+        document.head.appendChild($style);
+    }
+}
+
+export function supportsFlex() {
+    const div = document.createElement('div');
+    div.style.display = 'flex';
+    return div.style.display === 'flex';
+}
+
+export function getRect(el) {
+    return el.getBoundingClientRect();
+}
+
+export function loadImg(url, scale) {
+    return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.crossOrigin = 'Anonymous';
+
+        img.onload = function () {
+            if (!scale || scale === 1) {
+                resolve(img);
+            } else {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                canvas.width = img.width * scale;
+                canvas.height = img.height * scale;
+                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+                canvas.toBlob((blob) => {
+                    const blobUrl = URL.createObjectURL(blob);
+                    const scaledImg = new Image();
+
+                    scaledImg.onload = function () {
+                        resolve(scaledImg);
+                    };
+
+                    scaledImg.onerror = function () {
+                        URL.revokeObjectURL(blobUrl);
+                        reject(new Error(`Image load failed: ${url}`));
+                    };
+
+                    scaledImg.src = blobUrl;
+                });
+            }
+        };
+
+        img.onerror = function () {
+            reject(new Error(`Image load failed: ${url}`));
+        };
+
+        img.src = url;
+    });
 }

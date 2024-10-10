@@ -6,12 +6,70 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+-   新增 `option.proxy` 选项，用于代理第三方的 `video` 和 `canvas`
+-   新增 `artplayer-proxy-canvas` 代理，可以使用 `canvas` 播放视频
+-   新增 `artplayer-proxy-webav` 代理，来自 [bilibili/WebAV](https://github.com/bilibili/WebAV)
+-   新增 `option.thumbnails.scale`, 用于预览图缩放
+-   修复 `art.url` 更改不能触发 `autoPlayBack` 的 `bug`: [#797](https://github.com/zhw2590582/ArtPlayer/issues/797)
+-   新增 `art.subtitle.cues` 属性, 获取整体的字幕列表
+-   新增 `art.subtitle.activeCues` 属性, 获取活跃的字幕列表
+-   新增 `subtitleBeforeUpdate` 事件, 在字幕元素渲染前触发
+-   修改 `subtitleUpdate` 事件为 `subtitleAfterUpdate`, 在字幕元素渲染后触发
+-   优化 `subtitleLoad` 事件的触发时机和回调参数
+-   删除 `subtitleSwitch` 事件，请使用 `subtitleLoad` 代替
+-   升级 `artplayer-plugin-hls-quality` 为 `artplayer-plugin-hls-control`
+
+## [5.1.7] - 2024-8-15
+
+-   新增 `Artplayer.STYLE` 属性，返回播放器样式文本
+-   `art.screenshot('your-name')` 截图功能支持自定义文件名字
+-   `Artplayer.CONTEXTMENU` 为 `false` 时，不再隐藏默认右键菜单
+-   新增 `art.thumbnails` 属性，用于动态设置 `thumbnails`
+
+## [5.1.6] - 2024-6-15
+
+-   优化 `setBar` 事件
+-   新增 `artplayerPluginChapter` 插件
+-   新增 `art.plugins.artplayerPluginDanmuku.load(target)` 参数，用于追加弹幕库
+-   新增弹幕插件的 `width` 选项参数，当播放器宽度小于此值时，弹幕发射器置于播放器底部
+-   修复 `artplayerPluginVttThumbnail` 在移动端不显示的问题
+-   修复弹幕插件样式，和字号百分比显示的 `bug`
+-   移动端也可以看到 `thumbnails` 了
+-   恢复 `screen.orientation.lock` 功能
+
+## [5.1.5] - 2024-6-1
+
+-   重构 `artplayerPluginDanmuku` 插件
+-   新增 `artplayerPluginChromecast` 插件
+-   添加 `fullscreenError` 事件
+-   优化双击事件: [#728](https://github.com/zhw2590582/ArtPlayer/pull/728)
+-   修复 `thumbnails` 延迟显示问题
+-   新增 `art.plugins.lock.state = true/false`, 用于手动控制 `lock` 状态
+-   当鼠标在控制栏上，或者打开了设置面板，控制栏不再自动隐藏
+-   由于兼容性不足，删除 `screen.orientation.lock` 功能
+-   修复移动端的 `fullscreen` bug
+
+## [5.1.1] - 2024-1-11
+
+-   插件函数支持同步和异步返回
+
+## [5.1.0] - 2023-12-23
+
+-   插件函数改为支持异步返回
 -   当播放地址发生错误到达上限后，不会再主动销毁播放器
 -   分离语言文件，核心代码不再捆绑多国语言 [语言设置](https://artplayer.org/document/start/i18n.html)
 -   更新组件时，支持填写只更新的字段 [pull/549](https://github.com/zhw2590582/ArtPlayer/pull/549)
 -   添加 `muted` 事件，当静音的状态变化时触发
 -   添加 `Artplayer.LOG_VERSION` 全局配置，设置是否打印播放器版本，默认为 `true`
 -   添加 `Artplayer.USE_RAF` 全局配置，设置是否使用 `requestAnimationFrame` ，默认为 `false`，目前主要用于进度条的平滑效果
+-   移除默认样式 `margin:0;padding:0;`，因为容易与第三方库起样式冲突，导致难以覆写
+-   字幕行从 `p` 标签改为 `div` 标签，并且添加类名 `art-subtitle-line`
+-   在移动端，点击视频会切换控制栏的显示与隐藏
+-   由于功能不常用，删除 `art.loop` 区间播放功能
+-   字幕轨添加 `label` 属性，用于在移动设备上显示字幕名字
+-   添加 `unescape`, `isBrowser`, `setStyleText` 工具函数
+-   添加 `artplayerPluginMultipleSubtitles` 插件，用于显示合并后的字幕文件: [demo](https://www.artplayer.org/?libs=./uncompiled/artplayer-plugin-multiple-subtitles/index.js&example=multiple.subtitles)
+-   修改迷你进度条的显示方式
 
 ## [5.0.9] - 2023-5-14
 

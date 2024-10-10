@@ -40,15 +40,6 @@ https://unpkg.com/artplayer/dist/artplayer.js
 
 ::: code-group
 
-```js [index.js]
-import Artplayer from 'artplayer';
-
-const art = new Artplayer({
-    container: '.artplayer-app',
-    url: 'path/to/video.mp4',
-});
-```
-
 ```html [index.html]
 <html>
     <head>
@@ -63,6 +54,13 @@ const art = new Artplayer({
     </head>
     <body>
         <div class="artplayer-app"></div>
+        <script src="path/to/artplayer.js"></script>
+        <script>
+          const art = new Artplayer({
+              container: '.artplayer-app',
+              url: 'path/to/video.mp4',
+          });
+        </script>
     </body>
 </html>
 ```
@@ -232,13 +230,34 @@ export default App;
 
 ## TypeScript
 
-导入 `Artplayer` 时会自动导入的 `artplayer.d.ts`，但你也可以单独导入选项的类型
+导入 `Artplayer` 时会自动导入的 `artplayer.d.ts`
 
-```ts{2}
+### Vue.js
+
+```vue{3}
+<script setup>
 import Artplayer from 'artplayer';
-import { type Option } from 'artplayer/types/option';
+const art = ref<Artplayer>(null);
+art.value = new Artplayer();
+</script>
+```
 
-const option: Option = {
+### React.js
+
+```jsx{2}
+import Artplayer from 'artplayer';
+const art = useRef<Artplayer>(null);
+art.current = new Artplayer();
+```
+
+### Option
+
+你也可以使用选项的类型
+
+```ts{3}
+import Artplayer from 'artplayer';
+
+const option: Artplayer['Option'] = {
     container: '.artplayer-app',
     url: './assets/sample/video.mp4',
 };

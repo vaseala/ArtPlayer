@@ -23,7 +23,14 @@ var art = new Artplayer({
         'x5-video-orientation': 'portraint',
         preload: "metadata"
     },
+    thumbnails: {
+        url: '/assets/sample/thumbnails.png',
+        number: 60,
+        column: 10,
+        scale: 0.6
+    },
     subtitle: {
+        name: '中日双语',
         url: '/assets/sample/subtitle.srt',
         style: {
             color: '#48aff0',

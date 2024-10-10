@@ -11,7 +11,7 @@ export default function autoOrientation(art) {
             const { videoWidth, videoHeight } = $video;
             const { clientWidth: viewWidth, clientHeight: viewHeight } = document.documentElement;
             if (
-                (videoWidth > videoHeight && viewWidth < viewHeight) ??
+                (videoWidth > videoHeight && viewWidth < viewHeight) ||
                 (videoWidth < videoHeight && viewWidth > viewHeight)
             ) {
                 // There is a conflict with the fullscreen event, and it is changed to asynchronous execution
@@ -35,12 +35,14 @@ export default function autoOrientation(art) {
     });
 
     art.on('fullscreen', async (state) => {
+        if (!screen?.orientation?.lock) return;
+
         const lastOrientation = screen.orientation.type;
         if (state) {
             const { videoWidth, videoHeight } = $video;
             const { clientWidth: viewWidth, clientHeight: viewHeight } = document.documentElement;
             if (
-                (videoWidth > videoHeight && viewWidth < viewHeight) ??
+                (videoWidth > videoHeight && viewWidth < viewHeight) ||
                 (videoWidth < videoHeight && viewWidth > viewHeight)
             ) {
                 const oppositeOrientation = lastOrientation.startsWith('portrait') ? 'landscape' : 'portrait';

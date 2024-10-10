@@ -1,4 +1,4 @@
-import { errorHandle, addClass, removeClass, isMobile, sleep } from '../utils';
+import { errorHandle, addClass, removeClass, isMobile, sleep, includeFromEvent } from '../utils';
 import Component from '../utils/component';
 import fullscreen from './fullscreen';
 import fullscreenWeb from './fullscreenWeb';
@@ -8,35 +8,57 @@ import progress from './progress';
 import time from './time';
 import volume from './volume';
 import setting from './setting';
-import thumbnails from './thumbnails';
 import screenshot from './screenshot';
-import loop from './loop';
 import airplay from './airplay';
 
 export default class Control extends Component {
     constructor(art) {
         super(art);
 
+        this.isHover = false;
         this.name = 'control';
+        this.timer = Date.now();
 
-        const {
-            proxy,
-            constructor,
-            template: { $player },
-        } = art;
+        const { constructor } = art;
+        const { $player, $bottom } = this.art.template;
 
-        let activeTime = Date.now();
+        art.on('mousemove', () => {
+            if (!isMobile) {
+                this.show = true;
+            }
+        });
 
-        proxy($player, ['click', 'mousemove', 'touchstart', 'touchmove'], () => {
-            this.show = true;
-            removeClass($player, 'art-hide-cursor');
-            addClass($player, 'art-hover');
-            activeTime = Date.now();
+        art.on('click', () => {
+            if (isMobile) {
+                this.toggle();
+            } else {
+                this.show = true;
+            }
+        });
+
+        art.on('document:mousemove', (event) => {
+            this.isHover = includeFromEvent(event, $bottom);
         });
 
         art.on('video:timeupdate', () => {
-            if (!art.isInput && art.playing && this.show && Date.now() - activeTime >= constructor.CONTROL_HIDE_TIME) {
+            if (
+                !art.setting.show &&
+                !this.isHover &&
+                !art.isInput &&
+                art.playing &&
+                this.show &&
+                Date.now() - this.timer >= constructor.CONTROL_HIDE_TIME
+            ) {
                 this.show = false;
+            }
+        });
+
+        art.on('control', (state) => {
+            if (state) {
+                removeClass($player, 'art-hide-cursor');
+                addClass($player, 'art-hover');
+                this.timer = Date.now();
+            } else {
                 addClass($player, 'art-hide-cursor');
                 removeClass($player, 'art-hover');
             }
@@ -58,23 +80,11 @@ export default class Control extends Component {
             );
         }
 
-        if (option.thumbnails.url && !option.isLive && !isMobile) {
-            this.add(
-                thumbnails({
-                    name: 'thumbnails',
-                    position: 'top',
-                    index: 20,
-                }),
-            );
-        }
-
-        this.add(
-            loop({
-                name: 'loop',
-                position: 'top',
-                index: 30,
-            }),
-        );
+        this.add({
+            name: 'thumbnails',
+            position: 'top',
+            index: 20,
+        });
 
         this.add(
             playAndPause({

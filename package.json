@@ -1,20 +1,26 @@
 {
     "name": "artplayer-packages",
-    "version": "5.0.0",
+    "version": "5.1.1",
     "type": "module",
+    "private": true,
     "description": "ArtPlayer.js is a modern and full featured HTML5 video player",
+    "workspaces": [
+        "packages/*"
+    ],
     "scripts": {
         "build:all": "npm run build all && npm run build:i18n && npm run build:sw && npm run build:ts && npm run build:docs",
-        "bootstrap": "npx lerna bootstrap --hoist",
-        "lint": "npx eslint packages/*/src",
+        "lint": "npx eslint packages/*/src --fix",
         "build:sw": "node ./scripts/build-sw.js",
         "build:ts": "node ./scripts/build-ts.js",
         "build:docs": "node ./scripts/build-docs.js",
         "build:i18n": "node ./scripts/build-i18n.js",
+        "trans:docs": "node ./scripts/trans-docs.js",
+        "create:plugin": "node ./scripts/plugin/create.js",
         "dev": "npx cross-env NODE_ENV=development node ./scripts/dev.js",
         "build": "npx cross-env NODE_ENV=production node ./scripts/build.js",
         "prettier": "npx prettier --write .",
-        "postinstall": "npm run bootstrap"
+        "postinstall": "npx lerna run prepare",
+        "bootstrap": "npx lerna link"
     },
     "repository": {
         "type": "git",
@@ -32,26 +38,30 @@
     "homepage": "https://artplayer.org",
     "browserslist": "last 1 Chrome version",
     "dependencies": {
-        "@babel/eslint-parser": "^7.22.11",
-        "@babel/preset-react": "^7.22.5",
-        "@parcel/config-default": "2.8.3",
-        "@parcel/core": "2.8.3",
-        "@parcel/optimizer-data-url": "2.8.3",
-        "@parcel/reporter-cli": "2.8.3",
-        "@parcel/transformer-inline-string": "2.8.3",
-        "@parcel/transformer-less": "2.8.3",
-        "cpy": "^10.1.0",
+        "@parcel/config-default": "^2.12.0",
+        "@parcel/core": "^2.12.0",
+        "@parcel/optimizer-data-url": "^2.12.0",
+        "@parcel/reporter-cli": "^2.12.0",
+        "@parcel/transformer-inline-string": "^2.12.0",
+        "@parcel/transformer-less": "^2.12.0",
+        "axios": "^1.7.2",
+        "cpy": "^11.0.1",
         "cross-env": "^7.0.3",
         "cross-spawn": "^7.0.3",
-        "eslint": "^8.48.0",
-        "glob": "^10.3.3",
-        "lerna": "^6.6.2",
-        "prettier": "^3.0.2",
+        "dotenv": "^16.4.5",
+        "eslint": "^9.6.0",
+        "glob": "^11.0.0",
+        "globals": "^15.8.0",
+        "lerna": "^8.1.5",
+        "prettier": "^3.3.2",
         "prompts": "^2.4.2",
         "servor": "^4.0.2",
-        "workbox-build": "^7.0.0"
+        "workbox-build": "^7.1.1"
+    },
+    "resolutions": {
+        "string-width": "4.2.3"
     },
     "engines": {
-        "node": ">= 16.0.0"
+        "node": ">= 20.0.0"
     }
 }

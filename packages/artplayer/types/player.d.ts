@@ -1,5 +1,5 @@
 import { CssVar } from './cssVar';
-import { CustomType } from './option';
+import { CustomType, Thumbnails } from './option';
 import { quality } from './quality';
 
 export type AspectRatio = 'default' | '4:3' | '16:9' | (`${number}:${number}` & Record<never, never>);
@@ -31,8 +31,6 @@ export declare class Player {
     set fullscreenWebToggle(state: boolean);
     get loaded(): number;
     get loadedTime(): number;
-    get loop(): number[];
-    set loop(value: number[]);
     get mini(): boolean;
     set mini(state: boolean);
     get pip(): boolean;
@@ -65,6 +63,8 @@ export declare class Player {
     set subtitleOffset(time: number);
     set switch(url: string);
     set quality(quality: quality[]);
+    get thumbnails(): Thumbnails;
+    set thumbnails(thumbnails: Thumbnails);
     pause(): void;
     play(): Promise<void>;
     toggle(): void;
@@ -74,7 +74,7 @@ export declare class Player {
     switchQuality(url: string): Promise<void>;
     getDataURL(): Promise<string>;
     getBlobUrl(): Promise<string>;
-    screenshot(): Promise<string>;
+    screenshot(name?: string): Promise<string>;
     airplay(): void;
     autoSize(): void;
     autoHeight(): void;

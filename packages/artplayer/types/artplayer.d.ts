@@ -16,6 +16,19 @@ export as namespace Artplayer;
 declare class Artplayer extends Player {
     constructor(option: Option, readyCallback?: (this: Artplayer, art: Artplayer) => unknown);
 
+    get Config(): Config;
+    get Events(): Events;
+    get Utils(): Utils;
+    get Player(): Player;
+    get Option(): Option;
+    get Subtitle(): Subtitle;
+    get Icons(): Icons;
+    get Template(): Template;
+    get I18n(): I18n;
+    get Setting(): Setting;
+    get SettingOption(): SettingOption;
+    get Component(): Component;
+
     static readonly instances: Artplayer[];
     static readonly version: string;
     static readonly env: string;
@@ -29,6 +42,7 @@ declare class Artplayer extends Player {
     static readonly html: Artplayer['template']['html'];
     static readonly option: Option;
 
+    static STYLE: string;
     static DEBUG: boolean;
     static CONTEXTMENU: boolean;
     static NOTICE_TIME: number;
@@ -104,7 +118,6 @@ declare class Artplayer extends Player {
             options?: boolean | AddEventListenerOptions,
         ): () => void;
         hover(element: HTMLElement, mouseenter?: (event: Event) => any, mouseleave?: (event: Event) => any): void;
-        loadImg(element: HTMLImageElement | string): Promise<HTMLImageElement>;
         remove(event: Event): void;
     };
 
@@ -139,6 +152,9 @@ declare class Artplayer extends Player {
     readonly subtitle: {
         get url(): string;
         set url(url: string);
+        get textTrack(): TextTrack;
+        get activeCues(): VTTCue[];
+        get cues(): VTTCue[];
         style(name: string | Partial<CSSStyleDeclaration>, value?: string): void;
         switch(url: string, option?: Subtitle): Promise<string>;
     } & Component;
@@ -165,7 +181,9 @@ declare class Artplayer extends Player {
     } & Component;
 
     readonly plugins: {
-        add(plugin: (this: Artplayer, art: Artplayer) => unknown): Artplayer['plugins'];
+        add(
+            plugin: (this: Artplayer, art: Artplayer) => any | Promise<any>,
+        ): Promise<Artplayer['plugins']> | Artplayer['plugins'];
         [pluginName: string]: any;
     };
 }

@@ -8,6 +8,7 @@ import {
     def,
     has,
     append,
+    getRect,
     addClass,
     setStyle,
     isMobile,
@@ -60,7 +61,7 @@ export default class Setting extends Component {
             const item = option[index];
             item.$parentItem = parentItem;
             item.$parentList = parentList;
-            Setting.makeRecursion(item.selector ?? [], item, option);
+            Setting.makeRecursion(item.selector || [], item, option);
         }
         return option;
     }
@@ -111,7 +112,7 @@ export default class Setting extends Component {
             if (item.name === name) {
                 return item;
             } else {
-                const result = this.find(name, item.selector ?? []);
+                const result = this.find(name, item.selector || []);
                 if (result) return result;
             }
         }
@@ -120,7 +121,7 @@ export default class Setting extends Component {
     remove(name) {
         const item = this.find(name);
         errorHandle(item, `Can't find [${name}] from the [setting]`);
-        const parent = item.$parentItem?.selector ?? this.option;
+        const parent = item.$parentItem ? item.$parentItem.selector : this.option;
         parent.splice(parent.indexOf(item), 1);
         this.option = Setting.makeRecursion(this.option);
         this.destroy();
@@ -190,13 +191,13 @@ export default class Setting extends Component {
         switch (type) {
             case 'switch':
             case 'range':
-                append($icon, isStringOrNumber(item.icon) ?? item.icon instanceof Element ? item.icon : icons.config);
+                append($icon, isStringOrNumber(item.icon) || item.icon instanceof Element ? item.icon : icons.config);
                 break;
             case 'selector':
                 if (item.selector && item.selector.length) {
                     append(
                         $icon,
-                        isStringOrNumber(item.icon) ?? item.icon instanceof Element ? item.icon : icons.config,
+                        isStringOrNumber(item.icon) || item.icon instanceof Element ? item.icon : icons.config,
                     );
                 } else {
                     append($icon, icons.check);
@@ -223,7 +224,7 @@ export default class Setting extends Component {
 
         const $html = createElement('div');
         addClass($html, 'art-setting-item-left-text');
-        append($html, item.html ?? '');
+        append($html, item.html || '');
         append($left, $html);
         item.$html = $html;
 
@@ -241,7 +242,7 @@ export default class Setting extends Component {
 
         const $tooltip = createElement('div');
         addClass($tooltip, 'art-setting-item-right-tooltip');
-        append($tooltip, item.tooltip ?? '');
+        append($tooltip, item.tooltip || '');
         append($right, $tooltip);
         item.$tooltip = $tooltip;
 
@@ -290,10 +291,10 @@ export default class Setting extends Component {
                     const $state = createElement('div');
                     addClass($state, 'art-setting-item-right-icon');
                     const $range = append($state, '<input type="range">');
-                    $range.value = item.range[0] ?? 0;
-                    $range.min = item.range[1] ?? 0;
-                    $range.max = item.range[2] ?? 10;
-                    $range.step = item.range[3] ?? 1;
+                    $range.value = item.range[0] || 0;
+                    $range.min = item.range[1] || 0;
+                    $range.max = item.range[2] || 10;
+                    $range.step = item.range[3] || 1;
                     addClass($range, 'art-setting-range');
                     append($right, $state);
                     item.$range = $range;
@@ -398,9 +399,9 @@ export default class Setting extends Component {
         } = this.art;
 
         if (controls.setting && !isMobile) {
-            const settingWidth = width ?? constructor.SETTING_WIDTH;
-            const { left: controlLeft, width: controlWidth } = controls.setting.getBoundingClientRect();
-            const { left: playerLeft, width: playerWidth } = $player.getBoundingClientRect();
+            const settingWidth = width || constructor.SETTING_WIDTH;
+            const { left: controlLeft, width: controlWidth } = getRect(controls.setting);
+            const { left: playerLeft, width: playerWidth } = getRect($player);
             const settingLeft = controlLeft - playerLeft + controlWidth / 2 - settingWidth / 2;
             if (settingLeft + settingWidth > playerWidth) {
                 setStyle($setting, 'left', null);
@@ -424,7 +425,7 @@ export default class Setting extends Component {
         } else {
             const $panel = createElement('div');
             addClass($panel, 'art-setting-panel');
-            $panel.dataset.width = width ?? constructor.SETTING_WIDTH;
+            $panel.dataset.width = width || constructor.SETTING_WIDTH;
             $panel.dataset.height = option.length * constructor.SETTING_ITEM_HEIGHT;
 
             if (option[0] && option[0].$parentItem) {

@@ -1,4 +1,4 @@
-import { errorHandle, query, addClass, replaceElement, isMobile } from './utils';
+import { supportsFlex, errorHandle, query, addClass, isMobile, replaceElement } from './utils';
 
 export default class Template {
     constructor(art) {
@@ -12,6 +12,8 @@ export default class Template {
             errorHandle(this.$container, `No container element found by ${option.container}`);
         }
 
+        errorHandle(supportsFlex(), 'The current browser does not support flex layout');
+
         const type = this.$container.tagName.toLowerCase();
         errorHandle(type === 'div', `Unsupported container element type, only support 'div' but got '${type}'`);
 
@@ -22,8 +24,6 @@ export default class Template {
 
         this.query = this.query.bind(this);
         this.$container.dataset.artId = art.id;
-        this.$original = this.$container.cloneNode(true);
-
         this.init();
     }
 
@@ -124,6 +124,17 @@ export default class Template {
         this.$infoClose = this.query('.art-info-close');
         this.$contextmenu = this.query('.art-contextmenus');
 
+        if (option.proxy) {
+            const video = option.proxy.call(this.art, this.art);
+            errorHandle(
+                video instanceof HTMLVideoElement || video instanceof HTMLCanvasElement,
+                `Function 'option.proxy' needs to return 'HTMLVideoElement' or 'HTMLCanvasElement'`,
+            );
+            replaceElement(video, this.$video);
+            video.className = 'art-video';
+            this.$video = video;
+        }
+
         if (option.backdrop) {
             addClass(this.$player, 'art-backdrop');
         }
@@ -135,7 +146,7 @@ export default class Template {
 
     destroy(removeHtml) {
         if (removeHtml) {
-            replaceElement(this.$original, this.$container);
+            this.$container.innerHTML = '';
         } else {
             addClass(this.$player, 'art-destroy');
         }

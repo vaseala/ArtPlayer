@@ -1,10 +1,6 @@
-::: danger Important Note
-The English document has not yet been completed, everything is subject to the Chinese document.
-:::
+# Installation and Usage
 
-# Install
-
-## Install
+## Installation
 
 ::: code-group
 
@@ -40,18 +36,9 @@ https://unpkg.com/artplayer/dist/artplayer.js
 
 :::
 
-## Use
+## Usage
 
 ::: code-group
-
-```js [index.js]
-import Artplayer from 'artplayer';
-
-const art = new Artplayer({
-    container: '.artplayer-app',
-    url: 'path/to/video.mp4',
-});
-```
 
 ```html [index.html]
 <html>
@@ -67,19 +54,25 @@ const art = new Artplayer({
     </head>
     <body>
         <div class="artplayer-app"></div>
+        <script src="path/to/artplayer.js"></script>
+        <script>
+          const art = new Artplayer({
+              container: '.artplayer-app',
+              url: 'path/to/video.mp4',
+          });
+        </script>
     </body>
 </html>
 ```
 
-::: 
+:::
+::: warning Warning
 
-::: warning Tip
-
-The size of the player depends on the size of the `container`, so your `container` must have a size
+The player's size depends on the size of the container `container`, so your container `container` must have a size.
 
 :::
 
-::: tip The following links can see more use examples
+::: tip You can see more examples of use at the following link
 
 [/packages/artplayer-template](https://github.com/zhw2590582/ArtPlayer/tree/master/packages/artplayer-template)
 
@@ -162,8 +155,7 @@ export default {
 ```
 
 :::
-
-::: warning Tip
+::: warning Artplayer Not Responsive：
 
 Modifying `option` directly in `Vue.js` will not change the player
 
@@ -227,22 +219,42 @@ export default App;
 ```
 
 :::
+::: warning Non-responsive Artplayer:
 
-::: warning Tip
-
-Modifying `option` directly in `React.js` will not change the player
+In `React.js`, directly modifying the `option` will not change the player
 
 :::
 
 ## TypeScript
 
-The `artplayer.d.ts` that is automatically imported when importing `Artplayer`, but you can also import the type of options individually
+Importing `Artplayer` will automatically import `artplayer.d.ts`
 
-```ts{2}
+### Vue.js
+
+```vue{3}
+<script setup>
 import Artplayer from 'artplayer';
-import { type Option } from 'artplayer/types/option';
+const art = ref<Artplayer>(null);
+art.value = new Artplayer();
+</script>
+```
 
-const option: Option = {
+### React.js
+
+```jsx{2}
+import Artplayer from 'artplayer';
+const art = useRef<Artplayer>(null);
+art.current = new Artplayer();
+```
+
+### Option
+
+You can also use the option type
+
+```ts{3}
+import Artplayer from 'artplayer';
+
+const option: Artplayer['Option'] = {
     container: '.artplayer-app',
     url: './assets/sample/video.mp4',
 };
@@ -252,18 +264,16 @@ option.volume = 0.5;
 const art = new Artplayer(option);
 ```
 
-::: tip All TypeScript definitions
+::: tip Complete TypeScript Definitions
 
 [packages/artplayer/types](https://github.com/zhw2590582/ArtPlayer/tree/master/packages/artplayer/types)
 
 :::
-
-
 ## JavaScript
 
-Sometimes your `js` file will lose the type prompt of `TypeScript`. At this time, you can manually import the type
+Sometimes your `js` file may lose the `TypeScript` type hints, in this case, you can manually import the types
 
-Variable:
+Variables:
 
 ```js{1-3}
 /**
@@ -298,7 +308,7 @@ export default {
 }
 ```
 
-Option:
+Options:
 
 ```js{1-3}
 /**
@@ -314,12 +324,11 @@ option.volume = 0.5;
 
 const art8 = new Artplayer(option);
 ```
+## Ancient Browsers
 
-## Old browsers
+The production build of `artplayer.js` is only compatible with the latest major version of `Chrome`: `last 1 Chrome version`
 
-Production builds of `artplayer.js` are only compatible with the last major version of `Chrome`: `last 1 Chrome version`
-
-For older browsers, use the `artplayer.legacy.js` file, compatible up to: `IE 11`
+For ancient browsers, you can use the `artplayer.legacy.js` file, which is compatible up to: `IE 11`
 
 ```js
 import Artplayer from 'artplayer/dist/artplayer.legacy.js';
@@ -337,11 +346,10 @@ https://unpkg.com/artplayer/dist/artplayer.legacy.js
 
 :::
 
-::: tip If you want to be compatible with older browsers, please modify the following configuration and build it yourself:
+::: tip If you need to support even older browsers, please modify the following configuration and then build it yourself:
 
-Build configuration: [/scripts/build.js](https://github.com/zhw2590582/ArtPlayer/blob/master/scripts/build.js#L29)
+Build configuration: [scripts/build.js](https://github.com/zhw2590582/ArtPlayer/blob/master/scripts/build.js#L29)
 
-Reference documents: [browserslist](https://github.com/browserslist/browserslist#full-list)
+Refer to documentation: [browserslist](https://github.com/browserslist/browserslist#full-list)
 
 :::
-

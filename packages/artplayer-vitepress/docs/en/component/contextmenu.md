@@ -1,19 +1,19 @@
-# Contextmenu
+# Context Menu
 
-## Config
+## Configuration
 
-| Property  | Type                | Describe                                       |
-| --------- | ------------------- | ---------------------------------------------- |
-| `disable` | `Boolean`           | Whether to disable the component               |
-| `name`    | `String`            | Component unique name, used to mark class name |
-| `index`   | `Number`            | Component index, used for display priority     |
-| `html`    | `String`, `Element` | DOM element of the component                   |
-| `style`   | `Object`            | component style object                         |
-| `click`   | `Function`          | Component click event                          |
-| `mounted` | `Function`          | Triggered after the component is mounted       |
-| `tooltip` | `String`            | Tooltip text for the component                 |
+| Property  | Type                | Description                 |
+| --------- | ------------------- | ----------------------------|
+| `disable` | `Boolean`           | Whether to disable the component |
+| `name`    | `String`            | Unique name of the component, used for marking the class name |
+| `index`   | `Number`            | Component index, used for display priority |
+| `html`    | `String`, `Element` | The DOM element of the component |
+| `style`   | `Object`            | Style object for the component |
+| `click`   | `Function`          | Click event for the component |
+| `mounted` | `Function`          | Triggered after the component is mounted |
+| `tooltip` | `String`            | Tooltip text for the component             |
 
-## Init
+## Creation
 
 <div className="run-code">▶ Run Code</div>
 
@@ -38,7 +38,6 @@ art.contextmenu.show = true;
 // Get the Element of contextmenu by name
 console.info(art.contextmenu['your-menu']);
 ```
-
 ## Add
 
 <div className="run-code">▶ Run Code</div>
@@ -64,7 +63,7 @@ art.contextmenu.show = true;
 console.info(art.contextmenu['your-menu']);
 ```
 
-## Remove
+## Delete
 
 <div className="run-code">▶ Run Code</div>
 
@@ -88,13 +87,13 @@ art.contextmenu.show = true;
 
 art.on('ready', () => {
     setTimeout(() => {
-        // Delete the contextmenu by name
+        // Delete the context menu by name
         art.contextmenu.remove('your-menu')
     }, 3000);
 });
 ```
 
-## Update
+## Updates
 
 <div className="run-code">▶ Run Code</div>
 

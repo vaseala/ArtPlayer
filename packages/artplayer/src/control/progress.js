@@ -1,8 +1,8 @@
-import { query, clamp, append, setStyle, secondToTime, includeFromEvent, isMobile } from '../utils';
+import { query, clamp, append, setStyle, secondToTime, includeFromEvent, isMobile, getRect } from '../utils';
 
 export function getPosFromEvent(art, event) {
     const { $progress } = art.template;
-    const { left } = $progress.getBoundingClientRect();
+    const { left } = getRect($progress);
     const eventLeft = isMobile ? event.touches[0].clientX : event.clientX;
     const width = clamp(eventLeft - left, 0, $progress.clientWidth);
     const second = (width / $progress.clientWidth) * art.duration;
@@ -15,11 +15,11 @@ export function setCurrentTime(art, event) {
     if (art.isRotate) {
         const percentage = event.touches[0].clientY / art.height;
         const second = percentage * art.duration;
-        art.emit('setBar', 'played', percentage);
+        art.emit('setBar', 'played', percentage, event);
         art.seek = second;
     } else {
         const { second, percentage } = getPosFromEvent(art, event);
-        art.emit('setBar', 'played', percentage);
+        art.emit('setBar', 'played', percentage, event);
         art.seek = second;
     }
 }
@@ -41,7 +41,9 @@ export default function progress(options) {
                 </div>
             `,
             mounted: ($control) => {
+                let tipTimer = null;
                 let isDroging = false;
+
                 const $hover = query('.art-progress-hover', $control);
                 const $loaded = query('.art-progress-loaded', $control);
                 const $played = query('.art-progress-played', $control);
@@ -58,7 +60,7 @@ export default function progress(options) {
                 function showHighlight(event) {
                     const { width } = getPosFromEvent(art, event);
                     const { text } = event.target.dataset;
-                    $tip.innerHTML = text;
+                    $tip.innerText = text;
                     const tipWidth = $tip.clientWidth;
                     if (width <= tipWidth / 2) {
                         setStyle($tip, 'left', 0);
@@ -69,9 +71,9 @@ export default function progress(options) {
                     }
                 }
 
-                function showTime(event) {
-                    const { width, time } = getPosFromEvent(art, event);
-                    $tip.innerHTML = time;
+                function showTime(event, touch) {
+                    const { width, time } = touch || getPosFromEvent(art, event);
+                    $tip.innerText = time;
                     const tipWidth = $tip.clientWidth;
                     if (width <= tipWidth / 2) {
                         setStyle($tip, 'left', 0);
@@ -82,55 +84,66 @@ export default function progress(options) {
                     }
                 }
 
-                function setBar(type, percentage) {
-                    if (type === 'loaded') {
-                        setStyle($loaded, 'width', `${percentage * 100}%`);
-                    }
-
-                    if (type === 'played') {
-                        setStyle($played, 'width', `${percentage * 100}%`);
-                        setStyle($indicator, 'left', `${percentage * 100}%`);
-                    }
-                }
-
-                function setHover(event) {
-                    const { width } = getPosFromEvent(art, event);
-                    setStyle($hover, 'width', `${width}px`);
-                    setStyle($hover, 'display', 'flex');
-                }
-
-                art.on('video:loadedmetadata', () => {
+                function updateHighlight() {
+                    $highlight.innerText = '';
                     for (let index = 0; index < option.highlight.length; index++) {
                         const item = option.highlight[index];
                         const left = (clamp(item.time, 0, art.duration) / art.duration) * 100;
                         const html = `<span data-text="${item.text}" data-time="${item.time}" style="left: ${left}%"></span>`;
                         append($highlight, html);
                     }
-                });
+                }
 
-                setBar('loaded', art.loaded);
+                function setBar(type, percentage, event) {
+                    const isMobileDroging = type === 'played' && event && isMobile;
 
-                art.on('setBar', (type, percentage) => {
-                    setBar(type, percentage);
-                });
+                    if (type === 'loaded') {
+                        setStyle($loaded, 'width', `${percentage * 100}%`);
+                    }
+
+                    if (type === 'hover') {
+                        setStyle($hover, 'width', `${percentage * 100}%`);
+                    }
+
+                    if (type === 'played') {
+                        setStyle($played, 'width', `${percentage * 100}%`);
+                        setStyle($indicator, 'left', `${percentage * 100}%`);
+                    }
+
+                    if (isMobileDroging) {
+                        setStyle($tip, 'display', 'flex');
+                        const width = $control.clientWidth * percentage;
+                        const time = secondToTime(percentage * art.duration);
+                        showTime(event, { width, time });
+                        clearTimeout(tipTimer);
+                        tipTimer = setTimeout(() => {
+                            setStyle($tip, 'display', 'none');
+                        }, 500);
+                    }
+                }
+
+                art.on('setBar', setBar);
+                art.on('video:loadedmetadata', updateHighlight);
 
                 art.on('video:progress', () => {
-                    setBar('loaded', art.loaded);
+                    art.emit('setBar', 'loaded', art.loaded);
                 });
 
                 if (art.constructor.USE_RAF) {
                     art.on('raf', () => {
-                        setBar('played', art.played);
+                        art.emit('setBar', 'played', art.played);
                     });
                 } else {
                     art.on('video:timeupdate', () => {
-                        setBar('played', art.played);
+                        art.emit('setBar', 'played', art.played);
                     });
                 }
 
                 art.on('video:ended', () => {
-                    setBar('played', 1);
+                    art.emit('setBar', 'played', 1);
                 });
+
+                art.emit('setBar', 'loaded', art.loaded || 0);
 
                 if (!isMobile) {
                     proxy($control, 'click', (event) => {
@@ -140,7 +153,8 @@ export default function progress(options) {
                     });
 
                     proxy($control, 'mousemove', (event) => {
-                        setHover(event);
+                        const { percentage } = getPosFromEvent(art, event);
+                        art.emit('setBar', 'hover', percentage, event);
                         setStyle($tip, 'display', 'flex');
                         if (includeFromEvent(event, $highlight)) {
                             showHighlight(event);
@@ -149,9 +163,9 @@ export default function progress(options) {
                         }
                     });
 
-                    proxy($control, 'mouseleave', () => {
+                    proxy($control, 'mouseleave', (event) => {
                         setStyle($tip, 'display', 'none');
-                        setStyle($hover, 'display', 'none');
+                        art.emit('setBar', 'hover', 0, event);
                     });
 
                     proxy($control, 'mousedown', (event) => {
@@ -161,7 +175,7 @@ export default function progress(options) {
                     art.on('document:mousemove', (event) => {
                         if (isDroging) {
                             const { second, percentage } = getPosFromEvent(art, event);
-                            setBar('played', percentage);
+                            art.emit('setBar', 'played', percentage, event);
                             art.seek = second;
                         }
                     });
