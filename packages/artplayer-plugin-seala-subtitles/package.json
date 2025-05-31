@@ -1,6 +1,6 @@
 {
     "license": "MIT",
-    "version": "1.0.6",
+    "version": "1.0.7",
     "name": "artplayer-plugin-seala-subtitles",
     "types": "types/artplayer-plugin-seala-subtitles.d.ts",
     "description": "subtitles plugin for Art-Player",

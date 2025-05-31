@@ -9,11 +9,26 @@ function mergeTrees(trees) {
 
         if (!tree.updated) {
             tree.updated = true;
+
             for (let j = 0; j < tree.cues.length; j++) {
                 const cue = tree.cues[j];
-                for (let k = 0; k < cue.tree.children.length; k++) {
-                    const children = cue.tree.children[k];
-                    children.value = `<div class="art-subtitle-${tree.name}">${children.value}</div>`;
+                const length = cue.tree.children.length;
+                for (let k = 0; k < length; k++) {
+                    const item = cue.tree.children[k];
+
+                    if (item.type == 'text' && item.value) {
+                        item.value = `<div class="art-subtitle-${tree.name}">${item.value}</div>`;
+                    } else if (item.type == 'object') {
+                        const childrenLength = item.children?.length || 0;
+                        let html = '';
+                        for (let l = 0; l < childrenLength; l++) {
+                            const child = item.children[l];
+                            if (child.type == 'text') {
+                                html += `<${item.name}>${child.value}</${item.name}>`;
+                            }
+                        }
+                        item.value = `<div class="art-subtitle-${tree.name}">${html}</div>`;
+                    }
                 }
             }
         }
@@ -33,6 +48,7 @@ export default function artplayerPluginSealaSubtitles() {
         const setSubtitles = (items = []) => {
             const trees = items.map((item, index) => {
                 const tree = parser.parse(item.text, 'metadata');
+                console.log(tree);
                 tree.name = items[index].name;
                 return tree;
             });
