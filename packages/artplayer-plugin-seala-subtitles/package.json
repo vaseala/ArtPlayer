@@ -1,0 +1,13 @@
+{
+    "license": "MIT",
+    "version": "1.0.6",
+    "name": "artplayer-plugin-seala-subtitles",
+    "types": "types/artplayer-plugin-seala-subtitles.d.ts",
+    "description": "subtitles plugin for Art-Player",
+    "main": "dist/artplayer-plugin-seala-subtitles.js",
+    "legacy": "dist/artplayer-plugin-seala-subtitles.legacy.js",
+    "browserslist": "last 1 Chrome version",
+    "peerDependencies": {
+        "artplayer": "*"
+    }
+}
