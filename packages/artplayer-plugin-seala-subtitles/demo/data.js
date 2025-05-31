@@ -1,4 +1,14 @@
 module.exports = {
+    en: `WEBVTT
+
+26:14.259 --> 26:17.329
+first line
+
+26:17.359 --> 26:21.329
+second line
+
+26:59.090 --> 27:03.343
+third line`,
     zh: `WEBVTT
 
 26:14.259 --> 26:17.329

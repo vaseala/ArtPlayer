@@ -1,42 +1,19 @@
 import { WebVTTParser, WebVTTSerializer } from './parser';
 
 function mergeTrees(trees) {
-    const parser = new WebVTTParser();
-    const result = parser.parse('', 'metadata');
-
-    for (let i = 0; i < trees.length; i++) {
-        const tree = trees[i];
-
-        if (!tree.updated) {
-            tree.updated = true;
-
-            for (let j = 0; j < tree.cues.length; j++) {
-                const cue = tree.cues[j];
-                const length = cue.tree.children.length;
-                for (let k = 0; k < length; k++) {
-                    const item = cue.tree.children[k];
-
-                    if (item.type == 'text' && item.value) {
-                        item.value = `<div class="art-subtitle-${tree.name}">${item.value}</div>`;
-                    } else if (item.type == 'object') {
-                        const childrenLength = item.children?.length || 0;
-                        let html = '';
-                        for (let l = 0; l < childrenLength; l++) {
-                            const child = item.children[l];
-                            if (child.type == 'text') {
-                                html += `<${item.name}>${child.value}</${item.name}>`;
-                            }
-                        }
-                        item.value = `<div class="art-subtitle-${tree.name}">${html}</div>`;
-                    }
-                }
-            }
-        }
-
-        result.cues.push(...tree.cues);
-    }
-
-    return result;
+    const result = [];
+    trees.forEach((tree) => {
+        console.log(tree.name);
+        tree.cues.forEach((item) => {
+            result.push({
+                ...item,
+                trackName: tree.name,
+            });
+        });
+    });
+    return {
+        cues: result,
+    };
 }
 
 export default function artplayerPluginSealaSubtitles() {
@@ -48,7 +25,6 @@ export default function artplayerPluginSealaSubtitles() {
         const setSubtitles = (items = []) => {
             const trees = items.map((item, index) => {
                 const tree = parser.parse(item.text, 'metadata');
-                console.log(tree);
                 tree.name = items[index].name;
                 return tree;
             });

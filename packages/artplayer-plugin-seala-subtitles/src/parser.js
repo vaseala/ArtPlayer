@@ -858,6 +858,18 @@
             return result;
         }
         function serializeCue(cue) {
+            // return (
+            //     (cue.id !== undefined ? cue.id + '\n' : '') +
+            //     serializeTimestamp(cue.startTime) +
+            //     ' --> ' +
+            //     serializeTimestamp(cue.endTime) +
+            //     serializeCueSettings(cue) +
+            //     '\n' +
+            //     serializeTree(cue.tree.children) +
+            //     '\n\n'
+            // );
+
+            const html = `<div class="art-subtitle-${cue.trackName}">${serializeTree(cue.tree.children)}</div>`;
             return (
                 (cue.id !== undefined ? cue.id + '\n' : '') +
                 serializeTimestamp(cue.startTime) +
@@ -865,7 +877,7 @@
                 serializeTimestamp(cue.endTime) +
                 serializeCueSettings(cue) +
                 '\n' +
-                serializeTree(cue.tree.children) +
+                html +
                 '\n\n'
             );
         }
